@@ -5,11 +5,14 @@ import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiSelector;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by WangQing on 16/9/28.
@@ -17,6 +20,7 @@ import java.util.Random;
 
 public class WeiXinTest extends UiAutomatorTestCase {
 
+    int waitTimeCount = 1000;
 
     int msgCount;
     Random random;
@@ -46,6 +50,15 @@ public class WeiXinTest extends UiAutomatorTestCase {
         msgCount = arrayList.size();
     }
 
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+
+        pressBack();
+        pressBack();
+        pressHome();
+    }
+
     public void testWeiXinAddUser() throws UiObjectNotFoundException {
         pressHome();
 
@@ -59,26 +72,33 @@ public class WeiXinTest extends UiAutomatorTestCase {
 
     /**
      * 查找用户
-     *
+     * <p>
      * 递归查找用户
-     *
      */
     private void searchUser(int count) {
+        waitTime();
+
         if (count <= 0) {
             return;
         } else {
-            count --;
+            count--;
         }
 
         //这个手机号 可以用一个 队列存储,取出一个后,里面就少一个
         //输入 手机号
         inputTextUIObject("com.tencent.mm:id/fo", (String) queue.poll());
-        //查找手机/QQ号 XXXX
-        clickUIObject("com.tencent.mm:id/aty");
+        //查找手机/QQ号 XXXX, 这个是布局
+        searchPhoneNum();
 
         if (isExit("用户不存在")) {  //当前用户不存在
             pressBack();
 //            请重新输入
+            searchUser(count);
+        } else if (isExit("操作过于频繁，请稍后再试。")) {
+            //下次的时间是 上次时间 的2倍
+            waitTimeCount += waitTimeCount;
+
+            pressBack();
             searchUser(count);
         } else {
 //            发消息
@@ -91,7 +111,9 @@ public class WeiXinTest extends UiAutomatorTestCase {
                 clickUIObject("添加到通讯录");
                 //随机数,随机从 已经存在的 List 里面获取消息
                 //发送验证申请,等对方通过, 写消息
-                inputTextUIObject("com.tencent.mm:id/c5k", (String) arrayList.get(msgCount - 1));
+                String sendMsg = (String) arrayList.get(random.nextInt(msgCount - 1));
+                Log.i(TAG, "searchUser_sendMsg: "  + sendMsg);
+                inputTextUIObject("com.tencent.mm:id/c5k", sendMsg);
                 //发送消息
                 clickUIObject("com.tencent.mm:id/fb");
                 //发送完成返回
@@ -102,13 +124,33 @@ public class WeiXinTest extends UiAutomatorTestCase {
         }
     }
 
+    private void searchPhoneNum() {
+        UiDevice mDevice = getUiDevice();
+        UiObject textUiObject = mDevice.findObject(new UiSelector().resourceId("com.tencent.mm:id/aty").className("android.widget.LinearLayout"));
+        if (textUiObject != null) {
+            try {
+                textUiObject.click();
+            } catch (UiObjectNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    private synchronized void waitTime() {
+        try {
+            Thread.sleep(waitTimeCount);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void inputTextUIObject(String obj, String text) {
         try {
             UiObject object1 = getUiObject(obj);
             if (object1 != null) {
                 object1.clearTextField(); //清除文本框中的功能
                 object1.setText(text);
-                object1.click();
             }
         } catch (UiObjectNotFoundException e) {
             e.printStackTrace();
