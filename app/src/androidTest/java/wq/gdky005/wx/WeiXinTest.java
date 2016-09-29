@@ -6,6 +6,7 @@ import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiSelector;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -26,6 +27,19 @@ public class WeiXinTest extends UiAutomatorTestCase {
     Random random;
     Queue queue;
     ArrayList arrayList;
+
+//    Handler handler = new Handler() {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            super.handleMessage(msg);
+//            switch (msg.what) {
+//                case 0:
+//                    Toast.makeText(getInstrumentation().getTargetContext(), "Hello", Toast.LENGTH_SHORT).show();
+//                    break;
+//            }
+//        }
+//    };
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -61,13 +75,29 @@ public class WeiXinTest extends UiAutomatorTestCase {
 
     public void testWeiXinAddUser() throws UiObjectNotFoundException {
         pressHome();
+        toast("启动自动化加人程序");
 
         //启动微信
         clickUIObject("微信");
         //点击搜索
         clickUIObject("搜索");
+
         //查找用户
         searchUser(queue.size());
+
+    }
+
+    private void toast(final String msg) {
+        try {
+            runTestOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getInstrumentation().getTargetContext(), msg, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
     }
 
     /**
@@ -98,12 +128,17 @@ public class WeiXinTest extends UiAutomatorTestCase {
             //下次的时间是 上次时间 的2倍
             waitTimeCount += waitTimeCount;
 
+            toast("操作过于频繁,已经将下次间隔时间调整为:" + waitTimeCount/1000 + "秒");
+
             pressBack();
             searchUser(count);
         } else {
 //            发消息
             if (isExit("发消息")) {
                 pressBack();
+
+                toast("已经为您自动添加其他联系人");
+
 //                请重新输入
                 searchUser(count);
             } else {
