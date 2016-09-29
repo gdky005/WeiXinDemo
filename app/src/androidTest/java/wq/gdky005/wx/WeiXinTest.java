@@ -52,7 +52,7 @@ public class WeiXinTest extends UiAutomatorTestCase {
             }
 
             UiObject object4 = getUiObject("com.tencent.mm:id/fb");
-            if (object2 != null)
+            if (object4 != null)
                 object4.click();
             pressBack();
 
