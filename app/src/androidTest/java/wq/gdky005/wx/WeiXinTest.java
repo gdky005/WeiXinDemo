@@ -15,59 +15,65 @@ public class WeiXinTest extends UiAutomatorTestCase {
     public void testWeiXinAddUser() throws UiObjectNotFoundException {
         pressHome();
 
-        UiObject app = getUiObject("微信");
-        if (app != null)
-            app.click();
+        //启动微信
+        clickUIObject("微信");
+        //点击搜索
+        clickUIObject("搜索");
+        //输入 手机号
+        inputTextUIObject("com.tencent.mm:id/fo", "18612116824");
+        //查找手机/QQ号 XXXX
+        clickUIObject("com.tencent.mm:id/aty");
 
-        UiObject object = getUiObject("搜索");
-        if (object != null)
-            object.click();
-
-        UiObject object1 = getUiObject("com.tencent.mm:id/fo");
-        if (object1 != null) {
-            object1.clearTextField(); //清除文本框中的功能
-            object1.setText("18612116813");
-            object1.click();
-        }
-
-
-        UiObject object2 = getUiObject("com.tencent.mm:id/aty");
-        if (object2 != null)
-            object2.click();
-
-
-        if (isExit("确定")) {
+        if (isExit("用户不存在")) {  //当前用户不存在
             pressBack();
 //            请重新输入
         } else {
-            UiObject addTXL = getUiObject("添加到通讯录");
-            if (addTXL != null)
-                addTXL.click();
+//            发消息
+            if (isExit("发消息")) {
+                pressBack();
+//                请重新输入
+            } else {
+                //添加用户到通讯录
+                clickUIObject("添加到通讯录");
+                //发送验证申请,等对方通过, 写消息
+                inputTextUIObject("com.tencent.mm:id/c5k", "很想认识你");
+                //发送消息
+                clickUIObject("com.tencent.mm:id/fb");
+                //发送完成返回
+                pressBack();
 
-            UiObject object3 = getUiObject("com.tencent.mm:id/c5k");
-            if (object3 != null) {
-                object3.clearTextField();
-                object3.setText("很想认识你");
-                object3.click();
+//            请重新输入
+
+//            //重新输入 手机号,添加新用户
+//            inputTextUIObject("com.tencent.mm:id/fo", "18612116834");
             }
-
-            UiObject object4 = getUiObject("com.tencent.mm:id/fb");
-            if (object4 != null)
-                object4.click();
-            pressBack();
-
-            //请重新输入
-            UiObject object5 = getUiObject("com.tencent.mm:id/fo");
-            if (object5 != null) {
-                object5.clearTextField(); //清除文本框中的功能
-                object5.setText("18612116812");
-                object5.click();
-            }
-
-
         }
+    }
 
+    private void inputTextUIObject(String obj, String text) {
+        try {
+            UiObject object1 = getUiObject(obj);
+            if (object1 != null) {
+                object1.clearTextField(); //清除文本框中的功能
+                object1.setText(text);
+                object1.click();
+            }
+        } catch (UiObjectNotFoundException e) {
+            e.printStackTrace();
+            // 控件没找到,暂不处理其他的东西
+        }
+    }
 
+    //点击 msg 的控件
+    private void clickUIObject(String msg) {
+        try {
+            UiObject app = getUiObject(msg);
+            if (app != null)
+                app.click();
+        } catch (UiObjectNotFoundException e) {
+            e.printStackTrace();
+            // 控件没找到,暂不处理其他的东西
+        }
     }
 
     private UiObject getUiObject(String text) {
