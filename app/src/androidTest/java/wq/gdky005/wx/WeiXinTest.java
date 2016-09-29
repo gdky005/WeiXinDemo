@@ -6,11 +6,45 @@ import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiObjectNotFoundException;
 import android.support.test.uiautomator.UiSelector;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Random;
+
 /**
  * Created by WangQing on 16/9/28.
  */
 
 public class WeiXinTest extends UiAutomatorTestCase {
+
+
+    int msgCount;
+    Random random;
+    Queue queue;
+    ArrayList arrayList;
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        random = new Random();
+        arrayList = new ArrayList();
+        queue = new LinkedList();
+
+        arrayList.add("我很想认识你");
+        arrayList.add("真希望和你做朋友");
+        arrayList.add("冥冥中是一种约定,上天让我认识了你");
+        arrayList.add("众里寻他千百度,蓦然回首遇见你");
+        arrayList.add("曾经沧海难为水,除去巫山不是你。");
+
+        queue.offer("18612116814");
+        queue.offer("18612116824");
+        queue.offer("18612116834");
+        queue.offer("18612116844");
+        queue.offer("18612116854");
+        queue.offer("18612116864");
+
+
+        msgCount = arrayList.size();
+    }
 
     public void testWeiXinAddUser() throws UiObjectNotFoundException {
         pressHome();
@@ -19,33 +53,51 @@ public class WeiXinTest extends UiAutomatorTestCase {
         clickUIObject("微信");
         //点击搜索
         clickUIObject("搜索");
+        //查找用户
+        searchUser(queue.size());
+    }
+
+    /**
+     * 查找用户
+     *
+     * 递归查找用户
+     *
+     */
+    private void searchUser(int count) {
+        if (count <= 0) {
+            return;
+        } else {
+            count --;
+        }
+
+        //这个手机号 可以用一个 队列存储,取出一个后,里面就少一个
         //输入 手机号
-        inputTextUIObject("com.tencent.mm:id/fo", "18612116824");
+        inputTextUIObject("com.tencent.mm:id/fo", (String) queue.poll());
         //查找手机/QQ号 XXXX
         clickUIObject("com.tencent.mm:id/aty");
 
         if (isExit("用户不存在")) {  //当前用户不存在
             pressBack();
 //            请重新输入
+            searchUser(count);
         } else {
 //            发消息
             if (isExit("发消息")) {
                 pressBack();
 //                请重新输入
+                searchUser(count);
             } else {
                 //添加用户到通讯录
                 clickUIObject("添加到通讯录");
+                //随机数,随机从 已经存在的 List 里面获取消息
                 //发送验证申请,等对方通过, 写消息
-                inputTextUIObject("com.tencent.mm:id/c5k", "很想认识你");
+                inputTextUIObject("com.tencent.mm:id/c5k", (String) arrayList.get(msgCount - 1));
                 //发送消息
                 clickUIObject("com.tencent.mm:id/fb");
                 //发送完成返回
                 pressBack();
-
 //            请重新输入
-
-//            //重新输入 手机号,添加新用户
-//            inputTextUIObject("com.tencent.mm:id/fo", "18612116834");
+                searchUser(count);
             }
         }
     }
