@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import okio.BufferedSource;
 import okio.Okio;
@@ -84,13 +85,13 @@ public class ReadFileUtil {
      *
      * @return
      */
-    public static ArrayList readPhoneNumberFile() {
+    public static LinkedList readPhoneNumberFile() {
         return readPhoneNumberFile(FileUitl.getPhoneNumberFile());
     }
 
-    public static ArrayList readPhoneNumberFile(File file) {
+    public static LinkedList readPhoneNumberFile(File file) {
         String content = readFile(file);
-        ArrayList list = getArrayList(content);
+        LinkedList list = getLinkedList(content);
         return list;
     }
 
@@ -106,11 +107,30 @@ public class ReadFileUtil {
         String[] myList = content.split(splitStr);
 
         for (String number : myList) {
-
             number = number.trim();
 
             if (!TextUtils.isEmpty(number))
                 list.add(number);
+        }
+        return list;
+    }
+
+    @NonNull
+    private static LinkedList getLinkedList(String content) {
+        LinkedList list = new LinkedList();
+        // 注意这里注意使用 Windows 的分隔符,用 mac 试试
+        String splitStr = "\r\n";
+
+        if (!content.contains(splitStr))
+            splitStr = "\\n";
+
+        String[] myList = content.split(splitStr);
+
+        for (String number : myList) {
+            number = number.trim();
+
+            if (!TextUtils.isEmpty(number))
+                list.offer(number);
         }
         return list;
     }

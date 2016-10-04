@@ -52,19 +52,23 @@ public class WeiXinTest extends UiAutomatorTestCase {
         queue = new LinkedList();
 
 
+        arrayList = ReadFileUtil.readSayHelloFile();
+        if (arrayList == null || arrayList.size() == 0) {
+            if (arrayList == null) {
+                arrayList = new ArrayList();
+            }
 
-        arrayList.add("我很想认识你");
-        arrayList.add("真希望和你做朋友");
-        arrayList.add("冥冥中是一种约定,上天让我认识了你");
-        arrayList.add("众里寻他千百度,蓦然回首遇见你");
-        arrayList.add("曾经沧海难为水,除去巫山不是你。");
+            arrayList.add("我很想认识你");
+            arrayList.add("真希望和你做朋友");
+            arrayList.add("冥冥中是一种约定,上天让我认识了你");
+            arrayList.add("众里寻他千百度,蓦然回首遇见你");
+            arrayList.add("曾经沧海难为水,除去巫山不是你。");
+        }
 
-        queue.offer("18612116814");
-        queue.offer("18612116824");
-        queue.offer("18612116834");
-        queue.offer("18612116844");
-        queue.offer("18612116854");
-        queue.offer("18612116864");
+        queue = ReadFileUtil.readPhoneNumberFile();
+        if (queue == null) {
+            queue = new LinkedList();
+        }
 
 
         msgCount = arrayList.size();
@@ -134,7 +138,7 @@ public class WeiXinTest extends UiAutomatorTestCase {
             //下次的时间是 上次时间 的2倍
             waitTimeCount += waitTimeCount;
 
-            toast("操作过于频繁,已经将下次间隔时间调整为:" + waitTimeCount/1000 + "秒");
+            toast("操作过于频繁,已经将下次间隔时间调整为:" + waitTimeCount / 1000 + "秒");
 
             pressBack();
             searchUser(count);
@@ -153,7 +157,7 @@ public class WeiXinTest extends UiAutomatorTestCase {
                 //随机数,随机从 已经存在的 List 里面获取消息
                 //发送验证申请,等对方通过, 写消息
                 String sendMsg = (String) arrayList.get(random.nextInt(msgCount - 1));
-                Log.i(TAG, "searchUser_sendMsg: "  + sendMsg);
+                Log.i(TAG, "searchUser_sendMsg: " + sendMsg);
                 inputTextUIObject("com.tencent.mm:id/c5k", sendMsg);
                 //发送消息
                 clickUIObject("com.tencent.mm:id/fb");
