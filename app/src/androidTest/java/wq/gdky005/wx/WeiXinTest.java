@@ -21,6 +21,10 @@ import static android.content.ContentValues.TAG;
 
 public class WeiXinTest extends UiAutomatorTestCase {
 
+
+    /**
+     * TODO 分钟数设置为 5分钟 到 30分钟, 随机获取
+     */
     int waitTimeCount = 1000;
 
     int msgCount;
@@ -46,6 +50,8 @@ public class WeiXinTest extends UiAutomatorTestCase {
         random = new Random();
         arrayList = new ArrayList();
         queue = new LinkedList();
+
+
 
         arrayList.add("我很想认识你");
         arrayList.add("真希望和你做朋友");
