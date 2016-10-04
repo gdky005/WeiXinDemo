@@ -23,7 +23,7 @@ public class WeiXinTest extends UiAutomatorTestCase {
 
 
     /**
-     * TODO 分钟数设置为 5分钟 到 30分钟, 随机获取
+     * TODO 分钟数设置为 5分钟 到 10分钟, 随机获取
      */
     int waitTimeCount = 1000;
 
@@ -50,6 +50,8 @@ public class WeiXinTest extends UiAutomatorTestCase {
         random = new Random();
         arrayList = new ArrayList();
         queue = new LinkedList();
+
+        waitTimeCount = getRandom(10, 5) * 60 * 1000;
 
 
         arrayList = ReadFileUtil.readSayHelloFile();
@@ -138,7 +140,7 @@ public class WeiXinTest extends UiAutomatorTestCase {
             //下次的时间是 上次时间 的2倍
             waitTimeCount += waitTimeCount;
 
-            toast("操作过于频繁,已经将下次间隔时间调整为:" + waitTimeCount / 1000 + "秒");
+            toast("操作过于频繁,已经将下次间隔时间调整为:" + waitTimeCount / 60 / 1000 + "分钟");
 
             pressBack();
             searchUser(count);
@@ -169,6 +171,18 @@ public class WeiXinTest extends UiAutomatorTestCase {
         }
     }
 
+    /**
+     * 获取一个范围的 随机数
+     *
+     * @param max 最大值
+     * @param min 最小值
+     * @return
+     */
+    public int getRandom(int max, int min) {
+        int random = (int) (min + (max - min) * Math.random());
+        return random;
+    }
+
     private void searchPhoneNum() {
         UiDevice mDevice = getUiDevice();
         UiObject textUiObject = mDevice.findObject(new UiSelector().resourceId("com.tencent.mm:id/aty").className("android.widget.LinearLayout"));
@@ -184,6 +198,10 @@ public class WeiXinTest extends UiAutomatorTestCase {
 
     private synchronized void waitTime() {
         try {
+//            random.nextInt(msgCount - 1);
+//            TODO 分钟数设置为 5分钟 到 30分钟, 随机获取
+//            waitTimeCount
+
             Thread.sleep(waitTimeCount);
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -253,14 +271,11 @@ public class WeiXinTest extends UiAutomatorTestCase {
         } else {
             return false;
         }
-
     }
-
 
     private UiObject getUiObjectFromText(String text) {
         UiDevice mDevice = getUiDevice();
         UiObject object = mDevice.findObject(new UiSelector().text(text));
-
         return object;
     }
 

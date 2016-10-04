@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import wq.gdky005.wx.ReadFileUtil;
 
@@ -15,8 +16,14 @@ public class TestFile {
 
     @Test
     public void testSayHello() {
-        ArrayList arrayList = ReadFileUtil.readPhoneNumberFile(new File("/Users/WangQing/Desktop/test/phoneNumber.txt"));
+        ArrayList arrayList = ReadFileUtil.readSayHelloFile(new File("/Users/WangQing/Desktop/test/sayGood.txt"));
+        System.out.println(arrayList.size());
 
+    }
+
+    @Test
+    public void testPhoneNumber() {
+        LinkedList arrayList = ReadFileUtil.readPhoneNumberFile(new File("/Users/WangQing/Desktop/test/phoneNumber.txt"));
         System.out.println(arrayList.size());
 
     }
