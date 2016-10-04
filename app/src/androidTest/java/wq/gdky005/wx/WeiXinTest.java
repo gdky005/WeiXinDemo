@@ -24,8 +24,9 @@ public class WeiXinTest extends UiAutomatorTestCase {
 
     /**
      * TODO 分钟数设置为 5分钟 到 10分钟, 随机获取
+     * 分钟单位
      */
-    int waitTimeCount = 1000;
+    int waitTimeCount = 1;
 
     int msgCount;
     Random random;
@@ -51,8 +52,8 @@ public class WeiXinTest extends UiAutomatorTestCase {
         arrayList = new ArrayList();
         queue = new LinkedList();
 
-        waitTimeCount = getRandom(10, 5) * 60 * 1000;
 
+        waitTimeCount = getRandom(10, 5);
 
         arrayList = ReadFileUtil.readSayHelloFile();
         if (arrayList == null || arrayList.size() == 0) {
@@ -118,8 +119,6 @@ public class WeiXinTest extends UiAutomatorTestCase {
      * 递归查找用户
      */
     private void searchUser(int count) {
-        waitTime();
-
         if (count <= 0) {
             return;
         } else {
@@ -129,6 +128,12 @@ public class WeiXinTest extends UiAutomatorTestCase {
         //这个手机号 可以用一个 队列存储,取出一个后,里面就少一个
         //输入 手机号
         inputTextUIObject("com.tencent.mm:id/fo", (String) queue.poll());
+
+        toast("等待" + waitTimeCount + "分钟后,开始自动添加");
+        waitTime();
+
+
+
         //查找手机/QQ号 XXXX, 这个是布局
         searchPhoneNum();
 
@@ -140,7 +145,7 @@ public class WeiXinTest extends UiAutomatorTestCase {
             //下次的时间是 上次时间 的2倍
             waitTimeCount += waitTimeCount;
 
-            toast("操作过于频繁,已经将下次间隔时间调整为:" + waitTimeCount / 60 / 1000 + "分钟");
+            toast("操作过于频繁,已经将下次间隔时间调整为:" + waitTimeCount + "分钟");
 
             pressBack();
             searchUser(count);
@@ -198,11 +203,9 @@ public class WeiXinTest extends UiAutomatorTestCase {
 
     private synchronized void waitTime() {
         try {
-//            random.nextInt(msgCount - 1);
-//            TODO 分钟数设置为 5分钟 到 30分钟, 随机获取
-//            waitTimeCount
-
-            Thread.sleep(waitTimeCount);
+//          分钟数设置为 5分钟 到 30分钟, 随机获取
+            Thread.sleep(waitTimeCount * 60 * 1000);
+//            Thread.sleep(waitTimeCount * 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
