@@ -71,7 +71,7 @@ public class ReadFileUtil {
      * @return
      */
     public static ArrayList readSayHelloFile() {
-        return readSayHelloFile(FileUitl.getSayHelloFile());
+        return readSayHelloFile(FileUtil.getSayHelloFile());
     }
 
     public static ArrayList readSayHelloFile(File file) {
@@ -86,7 +86,7 @@ public class ReadFileUtil {
      * @return
      */
     public static LinkedList readPhoneNumberFile() {
-        return readPhoneNumberFile(FileUitl.getPhoneNumberFile());
+        return readPhoneNumberFile(FileUtil.getPhoneNumberFile());
     }
 
     public static LinkedList readPhoneNumberFile(File file) {

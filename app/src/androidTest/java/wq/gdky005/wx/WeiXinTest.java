@@ -33,6 +33,10 @@ public class WeiXinTest extends UiAutomatorTestCase {
     Queue queue;
     ArrayList arrayList;
 
+    private ArrayList alreadyList;
+    private ArrayList noExitList;
+    private ArrayList addList;
+
 //    Handler handler = new Handler() {
 //        @Override
 //        public void handleMessage(Message msg) {
@@ -51,6 +55,11 @@ public class WeiXinTest extends UiAutomatorTestCase {
         random = new Random();
         arrayList = new ArrayList();
         queue = new LinkedList();
+
+
+        alreadyList = new ArrayList();
+        noExitList = new ArrayList();
+        addList = new ArrayList();
 
 
         waitTimeCount = getRandom(10, 5);
@@ -81,6 +90,9 @@ public class WeiXinTest extends UiAutomatorTestCase {
     protected void tearDown() throws Exception {
         super.tearDown();
 
+        //统计数据
+        SaveFileUtil.saveTongJiDataFile(alreadyList, noExitList, addList);
+
         pressBack();
         pressBack();
         pressHome();
@@ -88,6 +100,9 @@ public class WeiXinTest extends UiAutomatorTestCase {
 
     public void testWeiXinAddUser() throws UiObjectNotFoundException {
         pressHome();
+        pressHome();
+        pressHome();
+
         toast("启动自动化加人程序");
 
         //启动微信
@@ -125,19 +140,26 @@ public class WeiXinTest extends UiAutomatorTestCase {
             count--;
         }
 
+
+        String phoneNumber = (String) queue.poll();
+
+        alreadyList.add(phoneNumber);
+
         //这个手机号 可以用一个 队列存储,取出一个后,里面就少一个
         //输入 手机号
-        inputTextUIObject("com.tencent.mm:id/fo", (String) queue.poll());
+        inputTextUIObject("com.tencent.mm:id/fo", phoneNumber);
 
         toast("等待" + waitTimeCount + "分钟后,开始自动添加");
         waitTime();
-
 
 
         //查找手机/QQ号 XXXX, 这个是布局
         searchPhoneNum();
 
         if (isExit("用户不存在")) {  //当前用户不存在
+
+            noExitList.add(phoneNumber);
+
             pressBack();
 //            请重新输入
             searchUser(count);
@@ -149,6 +171,22 @@ public class WeiXinTest extends UiAutomatorTestCase {
 
             pressBack();
             searchUser(count);
+        } else if (isExit("添加到通讯录")) {
+            addList.add(phoneNumber);
+
+            //添加用户到通讯录
+            clickUIObject("添加到通讯录");
+            //随机数,随机从 已经存在的 List 里面获取消息
+            //发送验证申请,等对方通过, 写消息
+            String sendMsg = (String) arrayList.get(random.nextInt(msgCount - 1));
+            Log.i(TAG, "searchUser_sendMsg: " + sendMsg);
+            inputTextUIObject("com.tencent.mm:id/c5k", sendMsg);
+            //发送消息
+            clickUIObject("com.tencent.mm:id/fb");
+            //发送完成返回
+            pressBack();
+//            请重新输入
+            searchUser(count);
         } else {
 //            发消息
             if (isExit("发消息")) {
@@ -159,19 +197,12 @@ public class WeiXinTest extends UiAutomatorTestCase {
 //                请重新输入
                 searchUser(count);
             } else {
-                //添加用户到通讯录
-                clickUIObject("添加到通讯录");
-                //随机数,随机从 已经存在的 List 里面获取消息
-                //发送验证申请,等对方通过, 写消息
-                String sendMsg = (String) arrayList.get(random.nextInt(msgCount - 1));
-                Log.i(TAG, "searchUser_sendMsg: " + sendMsg);
-                inputTextUIObject("com.tencent.mm:id/c5k", sendMsg);
-                //发送消息
-                clickUIObject("com.tencent.mm:id/fb");
+                noExitList.add(phoneNumber);
                 //发送完成返回
                 pressBack();
 //            请重新输入
                 searchUser(count);
+                toast("其他错误");
             }
         }
     }

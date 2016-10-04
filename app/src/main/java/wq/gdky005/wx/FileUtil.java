@@ -8,10 +8,11 @@ import java.io.File;
  * Created by WangQing on 2016/10/4.
  */
 
-public class FileUitl {
+public class FileUtil {
 
     public static final String sayHelloFilePath = "sayGood.txt";
     public static final String phoneNumberFilePath = "phoneNumber.txt";
+    public static final String tongJiDataFilePath = "tongJiData.txt";
     public static final String homeDir = "/0WX/";
 
 
@@ -25,5 +26,9 @@ public class FileUitl {
 
     public static File getPhoneNumberFile() {
         return new File(getSDCard(), phoneNumberFilePath);
+    }
+
+    public static File saveTongJiData() {
+        return new File(getSDCard(), tongJiDataFilePath);
     }
 }
