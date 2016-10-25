@@ -64,7 +64,11 @@ public class WeiXinTest extends UiAutomatorTestCase {
 
         waitTimeCount = getRandom(10, 5);
 
-        arrayList = ReadFileUtil.readSayHelloFile();
+        try {
+            arrayList = ReadFileUtil.readSayHelloFile();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (arrayList == null || arrayList.size() == 0) {
             if (arrayList == null) {
                 arrayList = new ArrayList();
@@ -77,7 +81,11 @@ public class WeiXinTest extends UiAutomatorTestCase {
             arrayList.add("曾经沧海难为水,除去巫山不是你。");
         }
 
-        queue = ReadFileUtil.readPhoneNumberFile();
+        try {
+            queue = ReadFileUtil.readPhoneNumberFile();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (queue == null) {
             queue = new LinkedList();
         }
@@ -166,6 +174,7 @@ public class WeiXinTest extends UiAutomatorTestCase {
         } else if (isExit("操作过于频繁，请稍后再试。")) {
             //下次的时间是 上次时间 的2倍
             waitTimeCount += waitTimeCount;
+
 
             toast("操作过于频繁,已经将下次间隔时间调整为:" + waitTimeCount + "分钟");
 

@@ -100,6 +100,7 @@ public class ReadFileUtil {
         ArrayList list = new ArrayList();
         // 注意这里注意使用 Windows 的分隔符,用 mac 试试
         String splitStr = "\r\n";
+//        String splitStr = "\n";
 
         if (!content.contains(splitStr))
             splitStr = "\\n";
